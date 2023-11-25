@@ -1,0 +1,67 @@
+import java.util.ArrayList;
+import java.util.List;
+
+class Product {
+    String name;
+    double unitPrice;
+    double gst;
+    int quantity;
+
+    public Product(String name, double unitPrice, double gst, int quantity) {
+        this.name = name;
+        this.unitPrice = unitPrice;
+        this.gst = gst;
+        this.quantity = quantity;
+    }
+
+    double calculateTotal() {
+        return (unitPrice + (unitPrice * gst / 100)) * quantity;
+    }
+}
+
+public class ShoppingCart {
+    public static void main(String[] args) {
+        List<Product> basket = new ArrayList<>();
+        basket.add(new Product("Leather Wallet", 1100, 18, 1));
+        basket.add(new Product("Umbrella", 900, 12, 4));
+        basket.add(new Product("Cigarette", 200, 28, 3));
+        basket.add(new Product("Honey", 100, 0, 2));
+
+        Product maxGSTProduct = findProductWithMaxGST(basket);
+        System.out.println("Product with maximum GST amount: " + maxGSTProduct.name);
+
+        double totalAmount = calculateTotalAmount(basket);
+        System.out.println("Total amount to be paid: Rs. " + totalAmount);
+    }
+
+    private static Product findProductWithMaxGST(List<Product> basket) {
+        Product maxGSTProduct = null;
+        double maxGSTAmount = 0;
+
+        for (Product product : basket) {
+            double gstAmount = (product.unitPrice * product.gst / 100) * product.quantity;
+            if (gstAmount > maxGSTAmount) {
+                maxGSTAmount = gstAmount;
+                maxGSTProduct = product;
+            }
+        }
+
+        return maxGSTProduct;
+    }
+
+    private static double calculateTotalAmount(List<Product> basket) {
+        double totalAmount = 0;
+
+        for (Product product : basket) {
+            totalAmount += product.calculateTotal();
+        }
+
+        for (Product product : basket) {
+            if (product.unitPrice >= 500) {
+                totalAmount -= (product.unitPrice * product.quantity * 5) / 100;
+            }
+        }
+
+        return totalAmount;
+    }
+}
